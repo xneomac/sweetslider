@@ -36,7 +36,7 @@ const recipes = [
   },
 ];
 
-const MIN_CONFIDENCE_FOR_KNOWN_RECIPE = 95;
+const MIN_CONFIDENCE_FOR_KNOWN_RECIPE = 85;
 
 const buildDefaultValues = () =>
   ingredients.reduce((acc, ingredient) => {
@@ -217,18 +217,18 @@ export default function Home() {
         <aside style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: "16px", padding: "1.5rem", boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)" }}>
           <p style={{ color: "#94a3b8", marginBottom: "0.5rem" }}>Recette la plus proche</p>
           <h2 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
-            {displayedRecipe ? displayedRecipe.name : "Recette inconnue"}
+            {displayedRecipe ? displayedRecipe.name : "Tu t'engage dans une partie de cuisine inconnue"}
           </h2>
           <p style={{ marginBottom: "1.2rem", color: "#cbd5e1" }}>
             {displayedRecipe
               ? displayedRecipe.description
               : `Aucune recette ne correspond assez (minimum ${MIN_CONFIDENCE_FOR_KNOWN_RECIPE}%). Essaie un preset ou ajuste les sliders.`}
           </p>
-          <p style={{ marginBottom: "1rem" }}>Compatibilite: {bestMatch.confidence}%</p>
+          <p style={{ marginBottom: "1rem" }}>Confiance: {bestMatch.confidence}%</p>
 
           {displayedRecipe ? (
             <>
-              <h3 style={{ marginBottom: "0.6rem" }}>Reference de cette recette</h3>
+              <h3 style={{ marginBottom: "0.6rem" }}>Réference de cette recette</h3>
               <ul style={{ display: "grid", gap: "0.45rem", listStyle: "none", padding: 0 }}>
                 {ingredients.map((ingredient) => (
                   <li key={ingredient.key} style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #1e293b", paddingBottom: "0.25rem" }}>
