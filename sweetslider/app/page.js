@@ -37,6 +37,12 @@ const recipes = [
 ];
 
 const MIN_CONFIDENCE_FOR_KNOWN_RECIPE = 85;
+const UNKNOWN_RECIPE_JOKES = [
+  "Ton saladier improvise un solo jazz, et la recette est perdue en coulisses.",
+  "On est entre le dessert et l'experience scientifique. Courage, chef !",
+  "La spatule demande une pause: meme elle ne reconnait pas la recette.",
+  "Ce melange a de l'audace... mais aucun gateau n'a encore signe.",
+];
 
 const buildDefaultValues = () =>
   ingredients.reduce((acc, ingredient) => {
@@ -87,6 +93,7 @@ export default function Home() {
   const isKnownRecipe = bestMatch.confidence >= MIN_CONFIDENCE_FOR_KNOWN_RECIPE;
   const selectedRecipe = recipes.find((recipe) => recipe.name === selectedRecipeName);
   const displayedRecipe = isKnownRecipe ? selectedRecipe ?? bestMatch : null;
+  const unknownRecipeJoke = UNKNOWN_RECIPE_JOKES[bestMatch.confidence % UNKNOWN_RECIPE_JOKES.length];
 
   const handleSliderChange = (ingredientKey, nextValue) => {
     setValues((prev) => {
@@ -222,9 +229,12 @@ export default function Home() {
           <p style={{ marginBottom: "1.2rem", color: "#cbd5e1" }}>
             {displayedRecipe
               ? displayedRecipe.description
-              : `Aucune recette ne correspond assez (minimum ${MIN_CONFIDENCE_FOR_KNOWN_RECIPE}%). Essaie un preset ou ajuste les sliders.`}
+              : `Aucune recette ne correspond assez (minimum ${MIN_CONFIDENCE_FOR_KNOWN_RECIPE}%). Essaie un preset ou ajuste les sliders. ${unknownRecipeJoke}`}
           </p>
-          <p style={{ marginBottom: "1rem" }}>Confiance: {bestMatch.confidence}%</p>
+          <p style={{ marginBottom: "1rem" }}>
+            Confiance: {bestMatch.confidence}%
+            {bestMatch.confidence < 70 ? " - Niveau panique du fouet: eleve." : ""}
+          </p>
 
           {displayedRecipe ? (
             <>
