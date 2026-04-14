@@ -10,59 +10,61 @@ const ingredients = [
   { key: "lait", label: "Lait", unit: "ml", min: 0, max: 800, step: 10, defaultValue: 300 },
   { key: "beurre", label: "Beurre", unit: "g", min: 0, max: 250, step: 5, defaultValue: 30 },
   { key: "levure", label: "Levure", unit: "g", min: 0, max: 30, step: 1, defaultValue: 4 },
+  { key: "cacao", label: "Cacao en poudre", unit: "g", min: 0, max: 120, step: 5, defaultValue: 0 },
   { key: "chocolat", label: "Pepites de chocolat", unit: "g", min: 0, max: 300, step: 5, defaultValue: 0 },
+  { key: "chocolatFondu", label: "Chocolat fondu", unit: "g", min: 0, max: 250, step: 5, defaultValue: 0 },
 ];
 
 const recipes = [
   {
     name: "Crepes",
     description: "Pate fluide, cuisson rapide a la poele.",
-    targets: { farine: 250, sucre: 30, sel: 2, oeufs: 3, lait: 500, beurre: 40, levure: 0, chocolat: 0 },
+    targets: { farine: 250, sucre: 30, sel: 2, oeufs: 3, lait: 500, beurre: 40, levure: 0, cacao: 0, chocolat: 0, chocolatFondu: 0 },
   },
   {
     name: "Gateau nature",
     description: "Mie moelleuse, cuisson au four.",
-    targets: { farine: 200, sucre: 160, sel: 2, oeufs: 3, lait: 120, beurre: 120, levure: 10, chocolat: 0 },
+    targets: { farine: 200, sucre: 160, sel: 2, oeufs: 3, lait: 120, beurre: 120, levure: 10, cacao: 0, chocolat: 0, chocolatFondu: 0 },
   },
   {
     name: "Cookies",
     description: "Pate epaisse et croustillante avec pepites.",
-    targets: { farine: 250, sucre: 140, sel: 2, oeufs: 2, lait: 20, beurre: 130, levure: 5, chocolat: 180 },
+    targets: { farine: 250, sucre: 140, sel: 2, oeufs: 2, lait: 20, beurre: 130, levure: 5, cacao: 0, chocolat: 180, chocolatFondu: 40 },
   },
   {
     name: "Muffins",
     description: "Portions individuelles aeriennes.",
-    targets: { farine: 220, sucre: 120, sel: 2, oeufs: 2, lait: 180, beurre: 100, levure: 10, chocolat: 60 },
+    targets: { farine: 220, sucre: 120, sel: 2, oeufs: 2, lait: 180, beurre: 100, levure: 10, cacao: 15, chocolat: 60, chocolatFondu: 0 },
   },
   {
     name: "Brownie",
     description: "Texture fondante, riche en chocolat.",
-    targets: { farine: 120, sucre: 180, sel: 2, oeufs: 3, lait: 40, beurre: 170, levure: 2, chocolat: 220 },
+    targets: { farine: 120, sucre: 180, sel: 2, oeufs: 3, lait: 40, beurre: 170, levure: 2, cacao: 35, chocolat: 120, chocolatFondu: 120 },
   },
   {
     name: "Quatre-quarts",
     description: "Recette bretonne classique, dense et moelleuse.",
-    targets: { farine: 180, sucre: 180, sel: 2, oeufs: 3, lait: 20, beurre: 180, levure: 4, chocolat: 0 },
+    targets: { farine: 180, sucre: 180, sel: 2, oeufs: 3, lait: 20, beurre: 180, levure: 4, cacao: 0, chocolat: 0, chocolatFondu: 0 },
   },
   {
     name: "Madeleines",
     description: "Petits gateaux legerement bombes et parfumes.",
-    targets: { farine: 180, sucre: 130, sel: 1, oeufs: 3, lait: 50, beurre: 120, levure: 6, chocolat: 0 },
+    targets: { farine: 180, sucre: 130, sel: 1, oeufs: 3, lait: 50, beurre: 120, levure: 6, cacao: 0, chocolat: 0, chocolatFondu: 0 },
   },
   {
     name: "Pancakes",
     description: "Pate epaisse pour des pancakes moelleux.",
-    targets: { farine: 250, sucre: 35, sel: 2, oeufs: 2, lait: 320, beurre: 45, levure: 12, chocolat: 0 },
+    targets: { farine: 250, sucre: 35, sel: 2, oeufs: 2, lait: 320, beurre: 45, levure: 12, cacao: 0, chocolat: 0, chocolatFondu: 0 },
   },
   {
     name: "Cake marbre",
     description: "Cake vanille-chocolat a mie tendre.",
-    targets: { farine: 210, sucre: 160, sel: 2, oeufs: 3, lait: 90, beurre: 140, levure: 8, chocolat: 70 },
+    targets: { farine: 210, sucre: 160, sel: 2, oeufs: 3, lait: 90, beurre: 140, levure: 8, cacao: 20, chocolat: 70, chocolatFondu: 50 },
   },
   {
     name: "Financiers",
     description: "Petits gateaux moelleux, legerement dores.",
-    targets: { farine: 110, sucre: 150, sel: 1, oeufs: 3, lait: 30, beurre: 140, levure: 2, chocolat: 20 },
+    targets: { farine: 110, sucre: 150, sel: 1, oeufs: 3, lait: 30, beurre: 140, levure: 2, cacao: 10, chocolat: 20, chocolatFondu: 0 },
   },
 ];
 
@@ -111,6 +113,12 @@ const toRatios = (source) => {
   }, {});
 };
 
+const completeTargets = (targets) =>
+  ingredients.reduce((acc, ingredient) => {
+    acc[ingredient.key] = targets[ingredient.key] ?? 0;
+    return acc;
+  }, {});
+
 export default function Home() {
   const [values, setValues] = useState(buildDefaultValues);
   const [selectedRecipeName, setSelectedRecipeName] = useState(null);
@@ -122,7 +130,7 @@ export default function Home() {
     let highestConfidence = -1;
 
     for (const recipe of recipes) {
-      const recipeRatios = toRatios(recipe.targets);
+      const recipeRatios = toRatios(completeTargets(recipe.targets));
       let ratioDistance = 0;
 
       for (const ingredient of ingredients) {
@@ -186,24 +194,42 @@ export default function Home() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", padding: "2rem", background: "#fffaf3" }}>
+    <main style={{ minHeight: "100vh", padding: "clamp(0.9rem, 3vw, 2rem)", background: "#fffaf3" }}>
       <div
         style={{
           maxWidth: "1100px",
           margin: "0 auto",
           display: "grid",
           gap: "1.5rem",
-          gridTemplateColumns: "1.2fr 1fr",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          alignItems: "start",
         }}
       >
-        <section style={{ background: "#fffefb", borderRadius: "16px", padding: "1.5rem", boxShadow: "0 8px 24px rgba(92, 63, 35, 0.12)" }}>
-          <h1 style={{ fontSize: "1.8rem", marginBottom: "0.3rem" }}>Sweet Slider</h1>
+        <section
+          style={{
+            background: "#fffefb",
+            borderRadius: "16px",
+            padding: "clamp(1rem, 3vw, 1.5rem)",
+            boxShadow: "0 8px 24px rgba(92, 63, 35, 0.12)",
+          }}
+        >
+          <h1 style={{ fontSize: "clamp(1.6rem, 5vw, 1.9rem)", marginBottom: "0.3rem" }}>Sweet Slider</h1>
           <p style={{ color: "#6f543b", marginBottom: "1.3rem" }}>
             Ajuste chaque ingredient pour approcher une recette de patisserie.
           </p>
 
           <div style={{ marginBottom: "1.2rem" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginBottom: "0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                rowGap: "0.5rem",
+                columnGap: "0.75rem",
+                marginBottom: "0.5rem",
+              }}
+            >
               <h2 style={{ fontSize: "1.1rem", margin: 0 }}>Presets recettes</h2>
               <button
                 type="button"
@@ -228,7 +254,7 @@ export default function Home() {
                   key={recipe.name}
                   type="button"
                   onClick={() => {
-                    setValues(recipe.targets);
+                    setValues(completeTargets(recipe.targets));
                     setSelectedRecipeName(recipe.name);
                   }}
                   style={{
@@ -269,9 +295,17 @@ export default function Home() {
           </div>
         </section>
 
-        <aside style={{ background: "#4a3320", color: "#f8efe4", borderRadius: "16px", padding: "1.5rem", boxShadow: "0 8px 24px rgba(92, 63, 35, 0.28)" }}>
+        <aside
+          style={{
+            background: "#4a3320",
+            color: "#f8efe4",
+            borderRadius: "16px",
+            padding: "clamp(1rem, 3vw, 1.5rem)",
+            boxShadow: "0 8px 24px rgba(92, 63, 35, 0.28)",
+          }}
+        >
           <p style={{ color: "#e2ccb5", marginBottom: "0.5rem" }}>Recette la plus proche</p>
-          <h2 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
+          <h2 style={{ fontSize: "clamp(1.7rem, 7vw, 2rem)", marginBottom: "0.5rem" }}>
             {displayedRecipe ? displayedRecipe.name : "Recette inconnue"}
           </h2>
           <p style={{ marginBottom: "1.2rem", color: "#f0dfcc" }}>
@@ -298,7 +332,7 @@ export default function Home() {
                   <li key={ingredient.key} style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #6f4f33", paddingBottom: "0.25rem" }}>
                     <span>{ingredient.label}</span>
                     <span>
-                      {displayedRecipe ? displayedRecipe.targets[ingredient.key] : 0} {ingredient.unit}
+                      {displayedRecipe ? (displayedRecipe.targets[ingredient.key] ?? 0) : 0} {ingredient.unit}
                     </span>
                   </li>
                 ))}
