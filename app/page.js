@@ -68,7 +68,8 @@ const recipes = [
   },
 ];
 
-const MIN_CONFIDENCE_FOR_KNOWN_RECIPE = 95;
+const MIN_CONFIDENCE_FOR_POSSIBLE_RECIPE = 85;
+const MIN_CONFIDENCE_FOR_CONFIDENT_RECIPE = 95;
 
 const buildDefaultValues = () =>
   ingredients.reduce((acc, ingredient) => {
@@ -149,9 +150,10 @@ export default function Home() {
     return { ...bestRecipe, confidence: highestConfidence };
   }, [values]);
 
-  const isKnownRecipe = bestMatch.confidence >= MIN_CONFIDENCE_FOR_KNOWN_RECIPE;
+  const isPossibleRecipe = bestMatch.confidence >= MIN_CONFIDENCE_FOR_POSSIBLE_RECIPE;
+  const isConfidentRecipe = bestMatch.confidence >= MIN_CONFIDENCE_FOR_CONFIDENT_RECIPE;
   const selectedRecipe = recipes.find((recipe) => recipe.name === selectedRecipeName);
-  const displayedRecipe = selectedRecipe ?? (isKnownRecipe ? bestMatch : null);
+  const displayedRecipe = selectedRecipe ?? (isPossibleRecipe ? bestMatch : null);
 
   const handleSliderChange = (ingredientKey, nextValue) => {
     setValues((prev) => {
@@ -309,11 +311,16 @@ export default function Home() {
             {displayedRecipe ? displayedRecipe.name : "Recette inconnue"}
           </h2>
           <p style={{ marginBottom: "1.2rem", color: "#f0dfcc" }}>
-            {displayedRecipe
-              ? displayedRecipe.description
-              : `Aucune recette ne correspond assez (minimum ${MIN_CONFIDENCE_FOR_KNOWN_RECIPE}%). Essaie un preset ou ajuste les sliders.`}
+            {!displayedRecipe
+              ? `Aucune recette ne correspond assez (minimum ${MIN_CONFIDENCE_FOR_POSSIBLE_RECIPE}%). Essaie un preset ou ajuste les sliders.`
+              : isConfidentRecipe
+                ? displayedRecipe.description
+                : `${displayedRecipe.description} (${displayedRecipe.name}, mais ce n'est pas sur)`}
           </p>
-          <p style={{ marginBottom: "1rem" }}>Compatibilite: {bestMatch.confidence}%</p>
+          <p style={{ marginBottom: "1rem" }}>
+            Confiance pour realiser {bestMatch.name}: {bestMatch.confidence}%{" "}
+            {!isConfidentRecipe && isPossibleRecipe ? "(estimation incertaine)" : ""}
+          </p>
 
           <div style={{ display: "grid", gap: "0.75rem" }}>
             <div
